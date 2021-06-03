@@ -4,5 +4,5 @@ from .models import Bb
 
 
 def index(requests):
-    bbs = Bb.objects.order_by('-published')
+    bbs = Bb.objects.all()
     return render(requests, 'bboard/index.html', {'bbs': bbs})
