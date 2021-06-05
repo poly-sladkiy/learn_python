@@ -129,5 +129,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# IDEA files
+# Developer tools
 .idea
+.DS_Store
+
