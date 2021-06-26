@@ -43,31 +43,70 @@ class Bb(models.Model):
     title = models.CharField(max_length=50, verbose_name='Товар')
     content = models.TextField(null=True, blank=True, verbose_name='Описание')
     price = models.FloatField(null=True, blank=True, verbose_name='Цена')
+    edited = models.DateTimeField(verbose_name='Изменено')
     published = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
 
     rubric = models.ForeignKey('Rubric', null=True,
                                on_delete=models.PROTECT, verbose_name='Рубрика')
 
     class Meta:
+        # Название набора сущностей
         verbose_name_plural = 'Объявления'
+
+        # Название самой сущности
         verbose_name = 'Объявление'
 
-        ''' Cannot be together '''
-        # ordering = ['-published']
-        order_with_respect_to = 'rubric'
+        # параметры сортировки
+        ordering = ['-published', 'title']
 
+        # Позволяет сделать модель записей произвольно упорядочиваемым
+        # order_with_respect_to = 'rubric'
+
+        # Последовательность имен, которое должно быть уникальным в пределах таблицы
         unique_together = (
             ('title', 'published'),
             ('title', 'price', 'rubric'),
         )
 
-        get_latest_by = '-published'
+        # Имя поля типа DateField / DateTimeField
+        # которое будет возвращать latest / earliest по данному правилу
+        get_latest_by = ['edited', 'published']
 
+        """
+            Последовательность индексов, включающих в себя несколько полей
+            
+            !!! MySQL и MarinaDB не поддерживают condition и будут игнорировать это
+        """
         indexes = [
-            models.Index(fields=['-published', 'title'],
-                         name='bb_partial',
-                         condition=models.Q(price__lte=10000))
+            models.Index(fields=['-published', 'title'],  # поля для включения в индекс
+                         name='%(app_label)s_%(class)s_partial',  # Имя индеса
+                         condition=models.Q(price__lte=10000)),  # Критерий, которому должно удовлетворять
+
+            models.Index(fields=['title', 'price', 'rubric']),
         ]
+
+        # Другой способ задания индексов
+        # index_together = [
+        #     ['-published', 'title'],
+        #     ['title', 'price', 'rubric']
+        # ]
+
+        # Условия, которым должны удовлетворять значения, заносимые в поля
+        constraints = (
+            # Критерий для занесения в БД
+            models.CheckConstraint(
+                check=models.Q(price__gte=0) & \
+                      models.Q(price__lte=1000000),
+                name='bboard_rubric_price_constraint'  # Или '%(app_label)s_%(class)s_price_constraint'
+            ),
+
+            # Поля с уникальными значениями
+            models.UniqueConstraint(
+                fields=('title', 'price'),
+                name='%(app_label)s_%(class)s_title_price_constraint'
+            ),
+
+        )
 
 
 class Rubric(models.Model):
