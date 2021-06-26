@@ -43,7 +43,7 @@ class Bb(models.Model):
     title = models.CharField(max_length=50, verbose_name='Товар')
     content = models.TextField(null=True, blank=True, verbose_name='Описание')
     price = models.FloatField(null=True, blank=True, verbose_name='Цена')
-    edited = models.DateTimeField(verbose_name='Изменено')
+    # edited = models.DateTimeField(verbose_name='Изменено')
     published = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
 
     rubric = models.ForeignKey('Rubric', null=True,
@@ -92,6 +92,7 @@ class Bb(models.Model):
         # ]
 
         # Условия, которым должны удовлетворять значения, заносимые в поля
+        '''        
         constraints = (
             # Критерий для занесения в БД
             models.CheckConstraint(
@@ -107,11 +108,16 @@ class Bb(models.Model):
             ),
 
         )
+        '''
 
 
 class Rubric(models.Model):
     name = models.CharField(max_length=20, db_index=True,
                             verbose_name='Название')
+
+    # Императивный метод интернет адресс модели
+    def get_absolute_url(self):
+        return "/bboard/%s/" % self.pk
 
     def __str__(self):
         return self.name

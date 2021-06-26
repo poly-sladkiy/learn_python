@@ -124,3 +124,9 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Декларативный способ формирования адресса
+# не обязателен, если указан императивный
+ABSOLUTE_URL_OVERRIDES = {
+    'bboard.rubric': lambda rec: "/bboard/%s/" % rec.pk,
+}
