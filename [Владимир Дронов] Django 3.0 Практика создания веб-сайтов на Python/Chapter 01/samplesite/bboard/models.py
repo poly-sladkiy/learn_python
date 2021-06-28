@@ -1,6 +1,52 @@
 from django.db import models
 from django.core import validators
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+
+# Собственный валидатор - функция
+# Необходимо, чтобы функия принимала только
+# 1 аргумент - число которое нужно проверить
+# в случае провала - вызвать исключение
+def validate_even(val):
+    """
+    Если число не является четным, то
+    вызывается исключение ValidationError
+
+    - 1 аргумент    - сообщение об ошибке
+    - code: str     - код ошибки
+    - params: map   - значения, которые нужно поместить
+        в сообщении об ошибке.
+    """
+    if val % 2 != 0:
+        raise ValidationError(f'Число {val} нечетное',
+                              code='odd',
+                              params={'value': val})
+
+
+# Валидатор класс - нужен для того,
+# если необходимо передать какие-то
+# параметры задающие работу данного
+# валидатора
+class MinMaxValueValidator:
+
+    def __init__(self, min_value, max_value):
+        """
+        Конструктор задает работу валидотора
+        """
+        self.min_value = min_value
+        self.max_value = max_value
+
+    def __call__(self, val):
+        """
+        Принимает одно значение, которое проверяется по
+        соответствующим данным
+        """
+        if val < self.min_value or val > self.max_value:
+            raise ValidationError('Введенное число должно '
+                                  f'находится в диапазоне от {self.min_value} до {self.max_value}',
+                                  code='out_of_range',
+                                  params={'min': self.min_value, 'max': self.max_value})
 
 
 class Measure(models.Model):
@@ -107,7 +153,9 @@ class Bb(models.Model):
                              )
 
     content = models.TextField(null=True, blank=True, verbose_name='Описание')
-    price = models.FloatField(null=True, blank=True, verbose_name='Цена')
+    price = models.FloatField(null=True, blank=True, verbose_name='Цена',
+                              validators=[validate_even])
+
     # edited = models.DateTimeField(verbose_name='Изменено')
     published = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
 
