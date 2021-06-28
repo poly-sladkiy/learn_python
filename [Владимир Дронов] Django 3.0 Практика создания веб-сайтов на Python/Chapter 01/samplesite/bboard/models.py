@@ -1,4 +1,5 @@
 from django.db import models
+from django.core import validators
 from django.contrib.auth.models import User
 
 
@@ -25,6 +26,13 @@ class Machine(models.Model):
     spares = models.ManyToManyField(Spare)
 
 
+def get_min_length():
+    # Вычисляем длину
+    min_length = 4
+
+    return min_length
+
+
 class Bb(models.Model):
     # Создание полей со списком
     class Kinds(models.TextChoices):
@@ -40,7 +48,64 @@ class Bb(models.Model):
 
     kind = models.CharField(max_length=1, choices=Kinds.choices, default=Kinds.SELL)
 
-    title = models.CharField(max_length=50, verbose_name='Товар')
+    title = models.CharField(max_length=50, verbose_name='Товар',
+                             validators=[
+                                 # Проверка регулярным выражением:
+                                 #      - regex - само выражение
+                                 #      - message - сообщение об ошибке
+                                 #      - code - код ошибки
+                                 #      - inverse_match - должно ли НЕ соответсвовать выражению
+                                 #      - flag - флаги regex - str
+                                 validators.RegexValidator(regex='^.{4,}$'),
+
+                                 # Проверка минимальной длины
+                                 #      - message
+                                 #      - code
+                                 # validators.MinLengthValidator(get_min_length),
+
+                                 # Проверка почты
+                                 #      - message
+                                 #      - code
+                                 # validators.EmailValidator(),
+
+                                 # Проверка введенного url
+                                 #      - schemes=None - ['http', 'https', 'ftp', 'ftps']
+                                 #      - regex - само выражение - str / regex
+                                 #      - message
+                                 #      - code
+                                 # validators.URLValidator(),
+
+                                 # Проверка значения
+                                 # validators.MinValueValidator(<value>),
+                                 # validators.MaxValueValidator(<value>),
+
+                                 # Проверяем фиксированную точность
+                                 # validators.DecimalValidator(<максимальное кол-во цифр в числе>,
+                                 #                             <кол-во цифр в дробной части>),
+
+                                 # Валидаторы в виде функции
+
+                                 # validators.validate_ipv46_address(),
+                                 # validators.validate_ipv4_address(),
+                                 # validators.validate_ipv6_address(),
+
+                                 # validators.int_list_validator(),
+                             ],
+
+                             # Вывод собственных сообщений об ошибках.
+                             error_messages={
+                                 'invalid': 'Неверное имя товара',
+                                 # 'null': 'text',
+                                 # 'blank': 'text',
+                                 # 'unique': 'text',
+                                 # 'invalid_date': 'text',
+                                 # 'invalid_time': 'text',
+                                 # 'min_length': 'text',
+                                 # 'max_length': 'text',
+                                 # ...
+                             }
+                             )
+
     content = models.TextField(null=True, blank=True, verbose_name='Описание')
     price = models.FloatField(null=True, blank=True, verbose_name='Цена')
     # edited = models.DateTimeField(verbose_name='Изменено')
@@ -58,6 +123,7 @@ class Bb(models.Model):
             return '%s (%.2f)' % (self.title, self.price)
         else:
             return self.title
+
     # Описание, которое будет выводится на сайте
     title_and_price.short_description = 'Название и цена'
 
