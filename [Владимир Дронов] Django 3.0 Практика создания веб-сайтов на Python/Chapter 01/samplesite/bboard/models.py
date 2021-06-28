@@ -162,6 +162,25 @@ class Bb(models.Model):
     rubric = models.ForeignKey('Rubric', null=True,
                                on_delete=models.PROTECT, verbose_name='Рубрика')
 
+    def clean(self):
+        """
+        Бывают случаи, когда нужно проверить значения всей модели
+        для этого применяется переопределение метода clean()
+
+        Метод не должен принимать аргументы или возвращать результат.
+        Он должен возбудить исключение, если это требуется.
+        """
+        errors = {}
+
+        if not self.content:
+            errors['content'] = ValidationError('Укажите описание продаваемого товара')
+        if self.price and self.price < 0:
+            errors['price'] = ValidationError('Укажите неотрицательное значени цены')
+        if errors:
+            raise ValidationError(errors)
+
+
+
     # Функциональное поле - выполняет вычисления над данными,
     # которые можно только прочитать.
     # Не принимает никаких параметров
