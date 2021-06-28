@@ -49,6 +49,18 @@ class Bb(models.Model):
     rubric = models.ForeignKey('Rubric', null=True,
                                on_delete=models.PROTECT, verbose_name='Рубрика')
 
+    # Функциональное поле - выполняет вычисления над данными,
+    # которые можно только прочитать.
+    # Не принимает никаких параметров
+    # Вызывается как - {{ bb.title_and_price }}
+    def title_and_price(self):
+        if self.price:
+            return '%s (%.2f)' % (self.title, self.price)
+        else:
+            return self.title
+    # Описание, которое будет выводится на сайте
+    title_and_price.short_description = 'Название и цена'
+
     class Meta:
         # Название набора сущностей
         verbose_name_plural = 'Объявления'
@@ -119,8 +131,42 @@ class Rubric(models.Model):
     def get_absolute_url(self):
         return "/bboard/%s/" % self.pk
 
+    # Возвращает строковое представление записи модели
+    # оно будет выводиться при данном вызове - {{ rubric }}
     def __str__(self):
         return self.name
+
+    # Сохраняем запись
+    def save(self, *args, **kwargs):
+        # Какие-то действия перед сохранением
+
+        # Сохранение
+        super().save(*args, **kwargs)
+        # Действия после сохранения
+
+        '''
+        # Сохраняем, если is_model_correct вернёт True
+        # метод необходимо реализовать
+        if self.is_model_correct():
+            super().save(*args, **kwargs)
+            
+         '''
+
+    # Удаляем запись
+    def delete(self, *args, **kwargs):
+        # Какие-то действия перед удалением
+
+        # Удаляем
+        super().delete(*args, **kwargs)
+        # Действия после удаления
+
+        '''
+        # Удаляем, если is_model_correct вернёт True
+        # метод необходимо реализовать
+        if self.is_model_correct():
+            super().delete(*args, **kwargs)
+
+         '''
 
     class Meta:
         verbose_name_plural = 'Рубрики'
