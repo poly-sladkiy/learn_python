@@ -18,6 +18,7 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('bboard/', include('bboard.urls')),
+    # Корневой маршрут, указывающий на "корень" самого веб-сайта
+    path('', include('bboard.urls')),
     path('admin/', admin.site.urls),
 ]
