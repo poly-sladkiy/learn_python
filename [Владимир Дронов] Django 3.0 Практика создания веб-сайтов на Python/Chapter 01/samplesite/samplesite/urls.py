@@ -17,17 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 
-"""
-    По мнению автора использование псевдонимов - порождает путаницу.
-"""
-app_name = 'bboard'
 urlpatterns = [
-    # Корневой маршрут, указывающий на "корень" самого веб-сайта
-    path('', include(('bboard.urls', 'default-bboard'), namespace='default-bboard')),
+    path('', include('bboard.urls')),
+    path('bboard/', include('bboard.urls')),
 
-    # Псевдоним - альтернативное имя
-    # В html коде его можно указать как:
-    # <a href="{% 'other-bboard:index' %}">...</a>
-    path('bboard/', include(('bboard.urls', 'other-bboard'), namespace='other-bboard')),
     path('admin/', admin.site.urls),
 ]
