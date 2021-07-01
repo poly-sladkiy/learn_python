@@ -10,7 +10,7 @@ from .forms import BbForm
 class BbCreateView(CreateView):
     template_name = 'bboard/create.html'
     form_class = BbForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('bboard:index')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

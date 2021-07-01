@@ -1,5 +1,4 @@
 from django.db import models
-from django.core import validators
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -80,19 +79,6 @@ def get_min_length():
 
 
 class Bb(models.Model):
-    # Создание полей со списком
-    class Kinds(models.TextChoices):
-        """
-        Способен хранить значение из ограниченного набора, заданного в особом перечне
-        """
-        BUY = 'b', 'Куплю'
-        SELL = 's', 'Продам'
-        EXCHANGE = 'c', 'Обменяю'
-        RENT = 'r'
-
-        __empty__ = 'Выберете тип публикуемого объявления'
-
-    kind = models.CharField(max_length=1, choices=Kinds.choices, default=Kinds.SELL)
 
     title = models.CharField(max_length=50, verbose_name='Товар')
 
@@ -157,7 +143,6 @@ class Bb(models.Model):
         # Имя поля типа DateField / DateTimeField
         # которое будет возвращать latest / earliest по данному правилу
         get_latest_by = ['edited', 'published']
-
 
 
 class Rubric(models.Model):
