@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, FileResponse
+from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, FileResponse, JsonResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy, reverse
@@ -19,10 +19,13 @@ class BbCreateView(CreateView):
 
 
 def index(request):
-    # Paste your image's path
-    filename = r'B:\Downloads\image\bg.png'
+    data = {
+        'title': 'Мотоцикл',
+        'content': 'Страрый',
+        'price': 10000.0
+    }
 
-    return FileResponse(open(filename, 'rb'), as_attachment=True)
+    return JsonResponse(data)
 
 
 def by_rubric(request, rubric_id):
