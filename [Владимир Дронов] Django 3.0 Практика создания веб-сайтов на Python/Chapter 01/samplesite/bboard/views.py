@@ -35,6 +35,22 @@ def add_save(request):
         return render(request, 'bboard/create.html', context=context)
 
 
+def add_and_save(request):
+    if request.method == 'POST':
+        bbf = BbForm()
+        if bbf.is_valid():
+            bbf.save()
+            return HttpResponseRedirect(reverse('bboard:by_rubric',
+                                                kwargs={'rubric_id': bbf.cleaned_data['rubric'].pk}))
+        else:
+            context = {'form': bbf}
+            return render(request, 'bboard/create.html', context=context)
+    else:
+        bbf = BbForm()
+        context = {'form': bbf}
+        return render(request, 'bboard/create.html', context=context)
+
+
 def index(requests):
     bbs = Bb.objects.all()
     rubrics = Rubric.objects.all()
