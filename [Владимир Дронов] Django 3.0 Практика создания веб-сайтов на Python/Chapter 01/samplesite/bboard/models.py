@@ -94,69 +94,12 @@ class Bb(models.Model):
 
     kind = models.CharField(max_length=1, choices=Kinds.choices, default=Kinds.SELL)
 
-    title = models.CharField(max_length=50, verbose_name='Товар',
-                             validators=[
-                                 # Проверка регулярным выражением:
-                                 #      - regex - само выражение
-                                 #      - message - сообщение об ошибке
-                                 #      - code - код ошибки
-                                 #      - inverse_match - должно ли НЕ соответсвовать выражению
-                                 #      - flag - флаги regex - str
-                                 validators.RegexValidator(regex='^.{4,}$'),
-
-                                 # Проверка минимальной длины
-                                 #      - message
-                                 #      - code
-                                 # validators.MinLengthValidator(get_min_length),
-
-                                 # Проверка почты
-                                 #      - message
-                                 #      - code
-                                 # validators.EmailValidator(),
-
-                                 # Проверка введенного url
-                                 #      - schemes=None - ['http', 'https', 'ftp', 'ftps']
-                                 #      - regex - само выражение - str / regex
-                                 #      - message
-                                 #      - code
-                                 # validators.URLValidator(),
-
-                                 # Проверка значения
-                                 # validators.MinValueValidator(<value>),
-                                 # validators.MaxValueValidator(<value>),
-
-                                 # Проверяем фиксированную точность
-                                 # validators.DecimalValidator(<максимальное кол-во цифр в числе>,
-                                 #                             <кол-во цифр в дробной части>),
-
-                                 # Валидаторы в виде функции
-
-                                 # validators.validate_ipv46_address(),
-                                 # validators.validate_ipv4_address(),
-                                 # validators.validate_ipv6_address(),
-
-                                 # validators.int_list_validator(),
-                             ],
-
-                             # Вывод собственных сообщений об ошибках.
-                             error_messages={
-                                 'invalid': 'Неверное имя товара',
-                                 # 'null': 'text',
-                                 # 'blank': 'text',
-                                 # 'unique': 'text',
-                                 # 'invalid_date': 'text',
-                                 # 'invalid_time': 'text',
-                                 # 'min_length': 'text',
-                                 # 'max_length': 'text',
-                                 # ...
-                             }
-                             )
+    title = models.CharField(max_length=50, verbose_name='Товар')
 
     content = models.TextField(null=True, blank=True, verbose_name='Описание')
     price = models.FloatField(null=True, blank=True, verbose_name='Цена',
                               validators=[validate_even])
 
-    # edited = models.DateTimeField(verbose_name='Изменено')
     published = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
 
     rubric = models.ForeignKey('Rubric', null=True,
@@ -215,43 +158,6 @@ class Bb(models.Model):
         # которое будет возвращать latest / earliest по данному правилу
         get_latest_by = ['edited', 'published']
 
-        """
-            Последовательность индексов, включающих в себя несколько полей
-            
-            !!! MySQL и MarinaDB не поддерживают condition и будут игнорировать это
-        """
-        indexes = [
-            models.Index(fields=['-published', 'title'],  # поля для включения в индекс
-                         name='%(app_label)s_%(class)s_partial',  # Имя индеса
-                         condition=models.Q(price__lte=10000)),  # Критерий, которому должно удовлетворять
-
-            models.Index(fields=['title', 'price', 'rubric']),
-        ]
-
-        # Другой способ задания индексов
-        # index_together = [
-        #     ['-published', 'title'],
-        #     ['title', 'price', 'rubric']
-        # ]
-
-        # Условия, которым должны удовлетворять значения, заносимые в поля
-        '''        
-        constraints = (
-            # Критерий для занесения в БД
-            models.CheckConstraint(
-                check=models.Q(price__gte=0) & \
-                      models.Q(price__lte=1000000),
-                name='bboard_rubric_price_constraint'  # Или '%(app_label)s_%(class)s_price_constraint'
-            ),
-
-            # Поля с уникальными значениями
-            models.UniqueConstraint(
-                fields=('title', 'price'),
-                name='%(app_label)s_%(class)s_title_price_constraint'
-            ),
-
-        )
-        '''
 
 
 class Rubric(models.Model):

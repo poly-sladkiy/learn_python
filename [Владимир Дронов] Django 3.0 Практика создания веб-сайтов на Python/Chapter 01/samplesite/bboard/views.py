@@ -1,6 +1,7 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 from .models import Bb, Rubric
 from .forms import BbForm
@@ -15,6 +16,23 @@ class BbCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['rubrics'] = Rubric.objects.all()
         return context
+
+
+def add(request):
+    bbf = BbForm()
+    context = {'form': bbf}
+    return render(request, 'bboard/create.html', context=context)
+
+
+def add_save(request):
+    bbf = BbForm()
+    if bbf.is_valid():
+        bbf.save()
+        return HttpResponseRedirect(reverse('bboard:by_rubric',
+                                            kwargs={'rubric_id': bbf.cleaned_data['rubric'].pk}))
+    else:
+        context = {'form': bbf}
+        return render(request, 'bboard/create.html', context=context)
 
 
 def index(requests):
