@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy, reverse
@@ -18,44 +18,13 @@ class BbCreateView(CreateView):
         return context
 
 
-def add(request):
-    bbf = BbForm()
-    context = {'form': bbf}
-    return render(request, 'bboard/create.html', context=context)
-
-
-def add_save(request):
-    bbf = BbForm()
-    if bbf.is_valid():
-        bbf.save()
-        return HttpResponseRedirect(reverse('bboard:by_rubric',
-                                            kwargs={'rubric_id': bbf.cleaned_data['rubric'].pk}))
-    else:
-        context = {'form': bbf}
-        return render(request, 'bboard/create.html', context=context)
-
-
-def add_and_save(request):
-    if request.method == 'POST':
-        bbf = BbForm()
-        if bbf.is_valid():
-            bbf.save()
-            return HttpResponseRedirect(reverse('bboard:by_rubric',
-                                                kwargs={'rubric_id': bbf.cleaned_data['rubric'].pk}))
-        else:
-            context = {'form': bbf}
-            return render(request, 'bboard/create.html', context=context)
-    else:
-        bbf = BbForm()
-        context = {'form': bbf}
-        return render(request, 'bboard/create.html', context=context)
-
-
 def index(requests):
-    bbs = Bb.objects.all()
-    rubrics = Rubric.objects.all()
-    context = {'bbs': bbs, 'rubrics': rubrics}
-    return render(requests, 'bboard/index.html', context)
+    resp = HttpResponse("Здесь будет", content_type='text/plain; charset=utf-8')
+    resp.write(' главная')
+    resp.writelines((' страница', ' сайта'))
+    resp['reywords'] = 'Python, Django'
+
+    return resp
 
 
 def by_rubric(request, rubric_id):
