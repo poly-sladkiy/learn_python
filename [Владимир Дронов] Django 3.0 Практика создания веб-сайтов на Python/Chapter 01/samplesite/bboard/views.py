@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy, reverse
@@ -18,11 +18,9 @@ class BbCreateView(CreateView):
         return context
 
 
-def index(requests):
-    resp = HttpResponse("Здесь будет", content_type='text/plain; charset=utf-8')
-    resp.write(' главная')
-    resp.writelines((' страница', ' сайта'))
-    resp['reywords'] = 'Python, Django'
+def index(request):
+    resrp_content = ('Здесь будет', ' главная', ' страница', ' сайта')
+    resp = StreamingHttpResponse(resrp_content, content_type='text/plain; charset=utf-8')
 
     return resp
 
