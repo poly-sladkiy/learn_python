@@ -2,6 +2,8 @@ from django.urls import path, re_path
 
 from .views import index, by_rubric, BbCreateView
 
+# Имя приложения
+app_name = 'bboard'
 urlpatterns = [
     # Использование re для совместимости с django 1.x
     re_path(r'^add/$', BbCreateView.as_view(), name='add'),
