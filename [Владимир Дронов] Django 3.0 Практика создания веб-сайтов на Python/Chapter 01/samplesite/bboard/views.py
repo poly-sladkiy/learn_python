@@ -2,10 +2,27 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 from django.urls import reverse_lazy
 
 from .models import Bb, Rubric
 from .forms import BbForm
+
+
+class BbDetailView(DetailView):
+    """
+    Класс выводящий одну запись.
+
+    Ищет запись по полученным значениям ключа или слага, заносит в атрибут object
+    и выводит на экран страницу с содержимым этой записи.
+    """
+    model = Bb
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rubrics'] = Rubric.objects.all()
+
+        return context
 
 
 class BbByRubricView(TemplateView):
