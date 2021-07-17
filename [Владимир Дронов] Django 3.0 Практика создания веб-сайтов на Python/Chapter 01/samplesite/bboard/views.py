@@ -1,10 +1,23 @@
-from django.http import HttpResponseRedirect, HttpResponse, StreamingHttpResponse, FileResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 
 from .models import Bb, Rubric
 from .forms import BbForm
+
+
+class BbByRubricView(TemplateView):
+    template_name = 'bboard/by_rubric.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bbs'] = Bb.objects.filter(rubric=context['rubric_id'])
+        context['rubrics'] = Rubric.objects.all()
+        context['current_rubric'] = Rubric.objects.get(pk=context['rubrics_id'])
+
+        return context
 
 
 class BbCreateView(CreateView):
