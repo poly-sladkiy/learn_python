@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import ListView
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.urls import reverse
 
@@ -73,6 +73,17 @@ class BbEditView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['rubrics'] = Rubric.objects.all()
 
+        return context
+
+
+class BbDeleteView(DeleteView):
+    model = Bb
+    success_url = '/'
+    template_name = 'bboard/bb_confim_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rubrics'] = Rubric.objects.all()
         return context
 
 
