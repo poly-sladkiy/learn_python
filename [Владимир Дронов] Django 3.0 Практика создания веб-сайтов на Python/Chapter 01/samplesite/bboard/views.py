@@ -1,9 +1,9 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import ListView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.detail import DetailView
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 
 from .models import Bb, Rubric
 from .forms import BbForm
@@ -61,6 +61,19 @@ class BbCreateView(FormView):
     def get_success_url(self):
         return reverse('bboard:by_rubric',
                        kwargs={'rubric_id': self.object.cleaned_data['rubric'].pk})
+
+
+class BbEditView(UpdateView):
+    model = Bb
+    form_class = BbForm
+    template_name = 'bboard/bb_form.html'
+    success_url = '/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rubrics'] = Rubric.objects.all()
+
+        return context
 
 
 def index(request):
