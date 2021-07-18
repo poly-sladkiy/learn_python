@@ -1,5 +1,6 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
-from django.views.generic import ListView, ArchiveIndexView
+from django.views.generic import ListView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.urls import reverse
@@ -95,19 +96,19 @@ class BbDeleteView(DeleteView):
         return context
 
 
-class BbIndexView(ArchiveIndexView):
-    model = Bb
-    date_field = 'published'
-    date_list_period = 'year'
-    template_name = 'bboard/index.html'
-    context_object_name = 'bbs'
-    allow_empty = True
+def index(request):
+    rubrics = Rubric.objects.all()
+    bbs = Bb.objects.all()
+    paginator = Paginator(bbs, 2)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['rubrics'] = Rubric.objects.all()
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
 
-        return context
+    page = paginator.get_page(page_num)
+    context = {'rubrics': rubrics, 'bbs': page.object_list, 'page': page}
+    return render(request, 'bboard/index.html', context)
 
 
 def by_rubric(request, rubric_id):
