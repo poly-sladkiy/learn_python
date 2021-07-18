@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import index, by_rubric, BbCreateView, BbByRubricView, BbDetailView
+from .views import BbIndexView, BbCreateView, BbByRubricView, BbDetailView
 
 # Имя приложения
 app_name = 'bboard'
@@ -11,5 +11,5 @@ urlpatterns = [
     path('detail/<int:pk>/', BbDetailView.as_view(), name='detail'),
 
     # Корневой маршрут, указывающий на "корень" приложения bboard
-    path('', index, name='index'),
+    path('', BbIndexView.as_view(), name='index'),
 ]

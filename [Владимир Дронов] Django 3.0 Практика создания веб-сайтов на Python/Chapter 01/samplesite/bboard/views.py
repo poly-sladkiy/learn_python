@@ -1,6 +1,5 @@
-from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, ArchiveIndexView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.urls import reverse
@@ -87,14 +86,19 @@ class BbDeleteView(DeleteView):
         return context
 
 
-def index(request):
-    data = {
-        'title': 'Мотоцикл',
-        'content': 'Страрый',
-        'price': 10000.0
-    }
+class BbIndexView(ArchiveIndexView):
+    model = Bb
+    date_field = 'published'
+    date_list_period = 'year'
+    template_name = 'bboard/index.html'
+    context_object_name = 'bbs'
+    allow_empty = True
 
-    return JsonResponse(data)
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['rubrics'] = Rubric.objects.all()
+
+        return context
 
 
 def by_rubric(request, rubric_id):
