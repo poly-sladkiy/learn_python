@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, ArchiveIndexView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.urls import reverse
 
 from .models import Bb, Rubric
@@ -24,17 +24,26 @@ class BbDetailView(DetailView):
         return context
 
 
-class BbByRubricView(ListView):
+class BbByRubricView(SingleObjectMixin, ListView):
+    """
+    !!! По мнению автора лучше избегать смешанной функциональности.
+    Удобнее взять за основу более низкоуровневый контроллер-класс.
+    """
     template_name = 'bboard/by_rubric.html'
-    context_object_name = 'bbs'
+    pk_url_kwarg = 'rubric_id'  # URL параметр через который передается ключ рубрики.
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Rubric.objects.all())
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Bb.objects.filter(rubric=self.kwargs['rubric_id'])
+        return self.object.bb_set.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['rubrics'] = Rubric.objects.all()
-        context['current_rubric'] = Rubric.objects.get(pk=self.kwargs['rubric_id'])
+        context['current_rubric'] = self.object
+        context['bbs'] = context['object_list']
 
         return context
 
