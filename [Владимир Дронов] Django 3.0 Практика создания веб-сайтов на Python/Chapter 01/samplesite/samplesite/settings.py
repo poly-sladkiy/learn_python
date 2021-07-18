@@ -54,9 +54,14 @@ ROOT_URLCONF = 'samplesite.urls'
 
 TEMPLATES = [
     {
+        # Путь к можулю шаблонизатора
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+
+        'DIRS': [],  # Список путей к папкам с шаблонами
+
+        'APP_DIRS': True,  # Будет искать в папках templates
+
+        # Дополнительные параметры
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
