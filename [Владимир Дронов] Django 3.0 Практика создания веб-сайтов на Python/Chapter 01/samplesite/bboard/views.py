@@ -1,3 +1,4 @@
+from django.contrib.auth.views import redirect_to_login
 from django.core.paginator import Paginator
 from django.forms import modelformset_factory
 from django.forms.formsets import ORDERING_FIELD_NAME
@@ -115,7 +116,8 @@ def index(request):
 
 
 def rubrics(request):
-    if request.user.is_authenticated:
+    # Если у пользователя есть соответсвующие права, то он имеет доступ
+    if request.user.has_perms(('bboard.add_rubric', 'bboard.change_rubric', 'bboard.delete_rubric')):
         RubricFormSet = modelformset_factory(Rubric,
                                              fields=('name',),
                                              can_order=True, can_delete=True)
@@ -132,8 +134,9 @@ def rubrics(request):
             formset = RubricFormSet()
         context = {'formset': formset}
         return render(request, 'bboard/rubrics.html', context)
+    # Если таковых прав нет, то перенаправляем на форму входа
     else:
-        return HttpResponseForbidden('Вы не имеете доступ к списку рубрик')
+        return redirect_to_login(reverse('bboard:login'))
 
 
 def by_rubric(request, rubric_id):
