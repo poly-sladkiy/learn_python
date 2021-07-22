@@ -1,8 +1,24 @@
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.forms import modelformset_factory
+from django.shortcuts import redirect, render
 
 from .models import Bb, Rubric
+
+
+def rubric(request):
+    RubricFormSet = modelformset_factory(Rubric, fields=('name',),
+                                         can_delete=True)
+    if request.method == 'POST':
+        formset = RubricFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect('bboard:index')
+    else:
+        formset = RubricFormSet()
+    context = {'formset': formset}
+    return render(request, 'bboard/rubrics.html', context)
 
 
 class BbForm(forms.ModelForm):
