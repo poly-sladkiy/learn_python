@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.views import redirect_to_login
 from django.core.paginator import Paginator
 from django.forms import modelformset_factory
@@ -115,28 +116,33 @@ def index(request):
     return render(request, 'bboard/index.html', context)
 
 
+'''
+    Django decorators (with ex.):
+        - @user_passes_test(lambda user: user.is_staff)
+        - permission_required(('bboard.view_rubric', 'bboard.add_rubric', ...))
+'''
+
+@login_required(login_url='/accounts/login/')
+@permission_required(('bboard.add_rubric', 'bboard.delete_rubric',
+                      'bboard.change_rubric'))
 def rubrics(request):
-    # Если у пользователя есть соответсвующие права, то он имеет доступ
-    if request.user.has_perms(('bboard.add_rubric', 'bboard.change_rubric', 'bboard.delete_rubric')):
-        RubricFormSet = modelformset_factory(Rubric,
-                                             fields=('name',),
-                                             can_order=True, can_delete=True)
-        if request.method == 'POST':
-            formset = RubricFormSet(request.POST)
-            if formset.is_valid():
-                for form in formset:
-                    if form.cleaned_data:
-                        rubric = form.save(commit=False)
-                        rubric.order = form.cleaned_data[ORDERING_FIELD_NAME]
-                        rubric.save()
-                return redirect('bboard:index')
-        else:
-            formset = RubricFormSet()
-        context = {'formset': formset}
-        return render(request, 'bboard/rubrics.html', context)
-    # Если таковых прав нет, то перенаправляем на форму входа
+    RubricFormSet = modelformset_factory(Rubric,
+                                         fields=('name',),
+                                         can_order=True, can_delete=True)
+    if request.method == 'POST':
+        formset = RubricFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data:
+                    rubric = form.save(commit=False)
+                    rubric.order = form.cleaned_data[ORDERING_FIELD_NAME]
+                    rubric.save()
+            return redirect('bboard:index')
     else:
-        return redirect_to_login(reverse('bboard:login'))
+        formset = RubricFormSet()
+    context = {'formset': formset}
+    return render(request, 'bboard/rubrics.html', context)
+
 
 
 def by_rubric(request, rubric_id):
