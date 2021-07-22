@@ -1,5 +1,8 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.forms import modelformset_factory
+from django.forms.formsets import ORDERING_FIELD_NAME
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView, SingleObjectMixin
@@ -109,6 +112,28 @@ def index(request):
     page = paginator.get_page(page_num)
     context = {'rubrics': rubrics, 'bbs': page.object_list, 'page': page}
     return render(request, 'bboard/index.html', context)
+
+
+def rubrics(request):
+    if request.user.is_authenticated:
+        RubricFormSet = modelformset_factory(Rubric,
+                                             fields=('name',),
+                                             can_order=True, can_delete=True)
+        if request.method == 'POST':
+            formset = RubricFormSet(request.POST)
+            if formset.is_valid():
+                for form in formset:
+                    if form.cleaned_data:
+                        rubric = form.save(commit=False)
+                        rubric.order = form.cleaned_data[ORDERING_FIELD_NAME]
+                        rubric.save()
+                return redirect('bboard:index')
+        else:
+            formset = RubricFormSet()
+        context = {'formset': formset}
+        return render(request, 'bboard/rubrics.html', context)
+    else:
+        return HttpResponseForbidden('Вы не имеете доступ к списку рубрик')
 
 
 def by_rubric(request, rubric_id):
