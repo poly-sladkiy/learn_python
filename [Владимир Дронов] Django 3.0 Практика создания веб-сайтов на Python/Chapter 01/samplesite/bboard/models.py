@@ -1,6 +1,39 @@
+from django.contrib.postgres.fields import DateTimeRangeField, ArrayField, CICharField, JSONField
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+
+
+class PGSRoomReserving(models.Model):
+    """
+        DateTimeRangeField
+        Хранит диапазон даты в виде объектов типа date из datetime.
+    """
+    name = models.CharField(max_length=20, verbose_name='Помещение',)
+    reserving = DateTimeRangeField(verbose_name='Время резервирования')
+    cancelled = models.BooleanField(default=False, verbose_name='Отменить резервирование')
+
+
+class PGSRubric(models.Model):
+    """
+        ArrayField
+        Содержит список из элементов одного типа
+            - size - размер списка, по умол.: None - не ограничен
+    """
+    name = models.CharField(max_length=20, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание')
+    tags = ArrayField(base_field=models.CharField(max_length=20),
+                      verbose_name='Теги')
+
+
+class PGSProject2(models.Model):
+    """
+        CICharField
+        Тоже самое, что и CharField, только при выполнении поиска не учит. регистр.
+    """
+    name = CICharField(max_length=40, verbose_name='Название')
+    data = JSONField()
+
 
 
 # Собственный валидатор - функция

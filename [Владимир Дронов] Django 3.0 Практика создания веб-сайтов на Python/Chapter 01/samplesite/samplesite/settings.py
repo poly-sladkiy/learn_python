@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bboard.apps.BboardConfig',
-    'captcha'
+    'django.contrib.postgres',
+    'captcha',
 ]
 
 MIDDLEWARE = [
