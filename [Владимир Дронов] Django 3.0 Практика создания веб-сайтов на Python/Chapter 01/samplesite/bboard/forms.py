@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -39,6 +40,9 @@ class BbForm(forms.ModelForm):
                                     label='Рубрика',
                                     help_text='Не забудьте ввести рубрику!',
                                     widget=forms.widgets.Select(attrs={'size': 2}))
+    captcha = CaptchaField(label='Решите выражение',
+                           error_messages={'invalid': 'Неверное решение'})
+
     '''
     forms.widgets.Select принимает словарь attr,
     в котором можно указать значение size, если его не передавать,

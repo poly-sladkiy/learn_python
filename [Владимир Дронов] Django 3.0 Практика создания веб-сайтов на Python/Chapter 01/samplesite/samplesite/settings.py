@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bboard.apps.BboardConfig',
+    'captcha'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ABSOLUTE_URL_OVERRIDES = {
     'bboard.rubric': lambda rec: "/bboard/%s/" % rec.pk,
 }
+
+""" Settings for django-simple-captcha """
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+
+
