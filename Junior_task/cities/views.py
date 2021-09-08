@@ -2,7 +2,7 @@ import requests
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView
 
-from cities.forms import HtmlForm
+from cities.forms import CityForm
 from cities.models import City
 
 __all__ = (
@@ -11,16 +11,16 @@ __all__ = (
 )
 
 
-def home(request, pk=None):
+def home(request):
     if request.method == 'POST':
-        form = HtmlForm(request.POST)
+        form = CityForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
+            form.save()
 
     qs = City.objects.all()
     context = {
         'cities': qs,
-        'form': HtmlForm,
+        'form': CityForm,
     }
 
     return render(request, 'cities/home.html', context=context)
