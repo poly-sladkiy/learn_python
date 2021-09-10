@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from cities.models import City
@@ -19,6 +20,23 @@ class Train(models.Model):
 
     def __str__(self):
         return f'{self.name} из {self.from_city} в {self.to_city}'
+
+    def clean(self):
+        if self.from_city == self.to_city:
+            raise ValidationError('Города не должны совпадать')
+
+        qs = Train.objects.filter(
+            from_city=self.from_city,
+            to_city=self.to_city,
+            travel_time=self.travel_time,
+        ).exclude(pk=self.pk)
+
+        if qs.exists():
+            raise ValidationError('Измените время в пути')
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Поезд'
