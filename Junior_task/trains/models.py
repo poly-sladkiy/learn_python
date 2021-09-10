@@ -14,7 +14,7 @@ class Train(models.Model):
                                   verbose_name='Город отправления')
     to_city = models.ForeignKey('cities.City',
                                 on_delete=models.CASCADE,
-                                related_name='from_city_set',
+                                related_name='to_city_set',
                                 verbose_name='Город прибытия')
 
     def __str__(self):
