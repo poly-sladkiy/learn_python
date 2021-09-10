@@ -1,15 +1,18 @@
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
 
 # from trains.forms import TrainForm
+from trains.forms import TrainForm
 from trains.models import Train
 
 __all__ = (
     'home',
     'TrainListView',
     'TrainDetailView',
-    # 'TrainCreateView',
+    'TrainCreateView',
     # 'TrainUpdateView',
     # 'TrainDeleteView',
 )
@@ -42,15 +45,15 @@ class TrainDetailView(DetailView):
     template_name = 'trains/detail.html'
 
 
-# class TrainCreateView(SuccessMessageMixin, CreateView):
-#     model = Train
-#     form_class = TrainForm
-#     template_name = 'trains/create.html'
-#
-#     success_url = reverse_lazy('trains:home')
-#     success_message = 'Город успешно создан.'
-#
-#
+class TrainCreateView(SuccessMessageMixin, CreateView):
+    model = Train
+    form_class = TrainForm
+    template_name = 'trains/create.html'
+
+    success_url = reverse_lazy('trains:home')
+    success_message = 'Поезд успешно создан.'
+
+
 # class TrainUpdateView(SuccessMessageMixin, UpdateView):
 #     model = Train
 #     form_class = TrainForm
