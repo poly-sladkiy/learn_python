@@ -23,8 +23,7 @@
 
                     <tr>
                         <td>
-{#                            <a href="{% url 'train:detail' pk=train.pk %}">{{ train.name }}</a>#}
-                            {{ train.name }}
+                            <a href="{% url 'trains:detail' pk=train.pk %}">{{ train.name }}</a>
                         </td>
 
                         <td>{{ train.from_city }}</td>

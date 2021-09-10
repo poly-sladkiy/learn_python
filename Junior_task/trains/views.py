@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 # from trains.forms import TrainForm
 from trains.models import Train
@@ -8,7 +8,7 @@ from trains.models import Train
 __all__ = (
     'home',
     'TrainListView',
-    # 'TrainDetailView',
+    'TrainDetailView',
     # 'TrainCreateView',
     # 'TrainUpdateView',
     # 'TrainDeleteView',
@@ -37,33 +37,33 @@ class TrainListView(ListView):
     template_name = 'trains/home.html'
 
 
-# class TrainDetailView(DetailView):
-#     queryset = Train.objects.all()
-#     template_name = 'cities/detail.html'
-#
-#
+class TrainDetailView(DetailView):
+    queryset = Train.objects.all()
+    template_name = 'trains/detail.html'
+
+
 # class TrainCreateView(SuccessMessageMixin, CreateView):
 #     model = Train
 #     form_class = TrainForm
-#     template_name = 'cities/create.html'
+#     template_name = 'trains/create.html'
 #
-#     success_url = reverse_lazy('cities:home')
+#     success_url = reverse_lazy('trains:home')
 #     success_message = 'Город успешно создан.'
 #
 #
 # class TrainUpdateView(SuccessMessageMixin, UpdateView):
 #     model = Train
 #     form_class = TrainForm
-#     template_name = 'cities/update.html'
+#     template_name = 'trains/update.html'
 #
-#     success_url = reverse_lazy('cities:home')
+#     success_url = reverse_lazy('trains:home')
 #     success_message = 'Город успешно изменен.'
 #
 #
 # class TrainDeleteView(DeleteView):
 #     model = Train
-#     # template_name = 'cities/delete.html'
-#     success_url = reverse_lazy('cities:home')
+#     # template_name = 'trains/delete.html'
+#     success_url = reverse_lazy('trains:home')
 #
 #     def get(self, request, *args, **kwargs):
 #         messages.success(request, 'Город успешно удален')
