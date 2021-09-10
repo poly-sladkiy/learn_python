@@ -29,8 +29,16 @@
                         <td>{{ train.from_city }}</td>
                         <td>{{ train.to_city }}</td>
                         <td>{{ train.travel_time }}</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td>
+                            <a href="{% url 'trains:update' pk=train.pk %}">
+                                <button type="submit" class="btn btn-primary">Редактировать</button>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'trains:delete' pk=train.pk %}">
+                                <button type="submit" class="btn btn-danger">Удалить</button>
+                            </a>
+                        </td>
 
                     </tr>
 

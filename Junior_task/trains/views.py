@@ -1,10 +1,10 @@
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-# from trains.forms import TrainForm
 from trains.forms import TrainForm
 from trains.models import Train
 
@@ -13,13 +13,12 @@ __all__ = (
     'TrainListView',
     'TrainDetailView',
     'TrainCreateView',
-    # 'TrainUpdateView',
-    # 'TrainDeleteView',
+    'TrainUpdateView',
+    'TrainDeleteView',
 )
 
 
 def home(request):
-
     all_cities = Train.objects.all()
 
     paginator = Paginator(all_cities, 5)
@@ -34,7 +33,6 @@ def home(request):
 
 
 class TrainListView(ListView):
-
     paginate_by = 5
     model = Train
     template_name = 'trains/home.html'
@@ -54,20 +52,20 @@ class TrainCreateView(SuccessMessageMixin, CreateView):
     success_message = 'Поезд успешно создан.'
 
 
-# class TrainUpdateView(SuccessMessageMixin, UpdateView):
-#     model = Train
-#     form_class = TrainForm
-#     template_name = 'trains/update.html'
-#
-#     success_url = reverse_lazy('trains:home')
-#     success_message = 'Город успешно изменен.'
-#
-#
-# class TrainDeleteView(DeleteView):
-#     model = Train
-#     # template_name = 'trains/delete.html'
-#     success_url = reverse_lazy('trains:home')
-#
-#     def get(self, request, *args, **kwargs):
-#         messages.success(request, 'Город успешно удален')
-#         return self.post(request, *args, **kwargs)
+class TrainUpdateView(SuccessMessageMixin, UpdateView):
+    model = Train
+    form_class = TrainForm
+    template_name = 'trains/update.html'
+
+    success_url = reverse_lazy('trains:home')
+    success_message = 'Поезд успешно изменен.'
+
+
+class TrainDeleteView(DeleteView):
+    model = Train
+    # template_name = 'trains/delete.html'
+    success_url = reverse_lazy('trains:home')
+
+    def get(self, request, *args, **kwargs):
+        messages.success(request, 'Город успешно удален')
+        return self.post(request, *args, **kwargs)
