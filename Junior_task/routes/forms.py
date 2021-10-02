@@ -9,7 +9,7 @@ class RouteForm(forms.Form):
         label='Готод отправления',
         queryset=City.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-control js-example-basic-single',
         })
     )
 
@@ -17,7 +17,7 @@ class RouteForm(forms.Form):
         label='Готод прибытия',
         queryset=City.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-control js-example-basic-single',
         })
     )
 
@@ -27,7 +27,7 @@ class RouteForm(forms.Form):
         required=False,
         widget=forms.SelectMultiple(
             attrs={
-                'class': 'form-control',
+                'class': 'form-control js-example-basic-multiple',
             }
         )
     )
