@@ -65,7 +65,7 @@ def get_route(request, form) -> dict:
     else:
         right_ways = all_ways
 
-    trains = []
+    routes = []
     all_trains = {}
 
     for q in qs:
@@ -86,10 +86,28 @@ def get_route(request, form) -> dict:
         tmp['total_time'] = total_time
 
         if total_time <= travelling_time:
-            trains.append(tmp)
+            routes.append(tmp)
 
-    if not trains:
+    if not routes:
         raise ValueError('Время в пути больше заданного')
+
+    sorted_routes = []
+    if len(routes) == 1:
+        sorted_routes = routes
+    else:
+        times = list(set(r['total_time'] for r in routes))
+        times = sorted(times)
+
+        for time in times:
+            for route in routes:
+                if time == route['total_time']:
+                    sorted_routes.append(route)
+
+    context['routes'] = sorted_routes
+    context['cities'] = {
+        'from_city': from_city.name,
+        'to_city': to_city.name
+    }
 
     return context
 
