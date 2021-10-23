@@ -62,6 +62,34 @@ def get_route(request, form) -> dict:
 
         if not right_ways:
             raise ValueError('Маршрута, проходящий через указанные города, не существует')
+    else:
+        right_ways = all_ways
+
+    trains = []
+    all_trains = {}
+
+    for q in qs:
+        all_trains.setdefault((q.from_city_id, q.to_city_id), [])
+        all_trains[(q.from_city_id, q.to_city_id)].append(q)
+
+    for route in right_ways:
+        tmp = {'trains': []}
+        total_time = 0
+
+        for i in range(len(route) - 1):
+            qs = all_trains[(route[i], route[i + 1])]
+            q = qs[0]
+
+            total_time += q.travel_time
+            tmp['trains'].append(qs)
+
+        tmp['total_time'] = total_time
+
+        if total_time <= travelling_time:
+            trains.append(tmp)
+
+    if not trains:
+        raise ValueError('Время в пути больше заданного')
 
     return context
 
