@@ -81,7 +81,7 @@ def get_route(request, form) -> dict:
             q = qs[0]
 
             total_time += q.travel_time
-            tmp['trains'].append(qs)
+            tmp['trains'].append(q)
 
         tmp['total_time'] = total_time
 
