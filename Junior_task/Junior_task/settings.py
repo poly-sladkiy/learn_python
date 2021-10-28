@@ -71,6 +71,8 @@ TEMPLATES = [
     },
 ]
 
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
 WSGI_APPLICATION = 'Junior_task.wsgi.application'
 
 
