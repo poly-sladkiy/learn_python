@@ -105,8 +105,8 @@ def get_route(request, form) -> dict:
 
     context['routes'] = sorted_routes
     context['cities'] = {
-        'from_city': from_city.name,
-        'to_city': to_city.name
+        'from_city': from_city,
+        'to_city': to_city,
     }
 
     return context
