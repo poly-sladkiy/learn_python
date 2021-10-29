@@ -17,14 +17,18 @@
                     <th>Время пути</th>
                 </tr>
 
-                {% for train in page_obj %}
+                {% for object in page_obj %}
 
                     <tr>
-                        <td>{{ train.name }}</td>
+                        <td>
+                            <a href="{% url 'detail' pk=object.pk %}">
+                                {{ object.name }}
+                            </a>
+                        </td>
 
-                        <td>{{ train.from_city }}</td>
-                        <td>{{ train.to_city }}</td>
-                        <td>{{ train.travel_times }}</td>
+                        <td>{{ object.from_city }}</td>
+                        <td>{{ object.to_city }}</td>
+                        <td>{{ object.travel_times }}</td>
 
                     </tr>
 
