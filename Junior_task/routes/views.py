@@ -80,7 +80,7 @@ def save_route(request):
             messages.success(request, 'Маршрут успешно сохранен')
             return redirect('/')
 
-        return render(request, 'routes/create.html', {'from': form})
+        return render(request, 'routes/create.html', {'form': form})
 
     else:
         messages.error(request, "Не возможно сохранить несуществующий маршрут")
