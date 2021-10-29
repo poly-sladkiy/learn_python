@@ -31,7 +31,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav ml-auto">
 
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == cities_home_url %} active {% endif %}"
@@ -56,6 +56,8 @@
                     </a>
                 </li>
 
+                {% if user.is_authenticated %}
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle
                        {% if request.path == cities_create_url or request.path == trains_create_url %} active {% endif %}"
@@ -70,6 +72,8 @@
                         <li><a class="dropdown-item" href="{% url 'trains:create' %}">Новый поезд</a></li>
                     </ul>
                 </li>
+
+                {% endif %}
 
                 {% if user.is_authenticated %}
 
